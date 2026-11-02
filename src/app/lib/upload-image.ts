@@ -1,9 +1,9 @@
 import { MAX_FILE_SIZE } from "@/lib/tiptap-utils";
 
 /**
- * `/api/files` é repassado para o backend pelo `rewrites` do next.config.
- * Assim o upload sai da mesma origem (o backend não libera CORS) e a imagem
- * fica salva na nota com um caminho relativo, sem o host do backend.
+ * Caminho relativo: em desenvolvimento o Vite repassa `/api` para o Spring
+ * (ver `vite.config.ts`); no app desktop o Spring serve o front. A imagem fica
+ * salva na nota como `/api/files/{id}`, sem o host do backend.
  */
 const FILES_PATH = "/api/files";
 
