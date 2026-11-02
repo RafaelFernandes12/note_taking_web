@@ -1,5 +1,3 @@
-"use client";
-
 // Carregado só no navegador (via `next/dynamic` com `ssr: false`): o
 // Excalidraw usa `window` e é pesado, então fica fora do bundle da nota.
 import { Excalidraw } from "@excalidraw/excalidraw";

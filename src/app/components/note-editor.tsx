@@ -1,8 +1,7 @@
-"use client";
-
 import { useMemo, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router";
 import type { JSONContent } from "@tiptap/react";
+import { updateNote, type Tag } from "@/app/lib/api";
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
 import { useThrottledCallback } from "@/hooks/use-throttled-callback";
 import { linkedNoteIds, noteTitle } from "@/app/lib/note-text";
@@ -13,12 +12,7 @@ import { DrawingButton } from "@/app/components/drawing/drawing-button";
 import type { UploadFunction } from "@/components/tiptap-node/image-upload-node/image-upload-node-extension";
 
 /** Tag como o backend devolve; reenviada inteira no PUT para não ser apagada. */
-export type NoteTag = {
-  id: number;
-  name: string;
-  createdAt?: string;
-  updatedAt?: string;
-};
+export type NoteTag = Tag;
 
 export function NoteEditor({
   id,
@@ -35,7 +29,7 @@ export function NoteEditor({
   // O PUT sempre manda conteúdo, tags e links juntos (o backend sobrescreve tudo).
   const contentRef = useRef(initialContent);
   const tagsRef = useRef(initialTags);
-  const router = useRouter();
+  const navigate = useNavigate();
 
   const uploadImage: UploadFunction = (file, onProgress, signal) =>
     uploadNoteImage(file, id, onProgress, signal);
@@ -46,30 +40,25 @@ export function NoteEditor({
         currentNoteId: id,
         onOpen: (href, newTab) => {
           if (newTab) window.open(href, "_blank", "noopener");
-          else router.push(href);
+          else navigate(href);
         },
       }),
     ],
-    [id, router],
+    [id, navigate],
   );
 
   const save = useThrottledCallback(
     async () => {
       try {
-        const res = await fetch(`http://localhost:8080/api/pages/${id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            title: noteTitle(contentRef.current),
-            content: contentRef.current,
-            tags: tagsRef.current,
-            // Os links saem do próprio texto: cada `[[nota]]` vira um `{ id }`.
-            links: linkedNoteIds(contentRef.current, id).map((linkId) => ({
-              id: linkId,
-            })),
-          }),
+        await updateNote(id, {
+          title: noteTitle(contentRef.current),
+          content: contentRef.current,
+          tags: tagsRef.current,
+          // Os links saem do próprio texto: cada `[[nota]]` vira um `{ id }`.
+          links: linkedNoteIds(contentRef.current, id).map((linkId) => ({
+            id: linkId,
+          })),
         });
-        if (!res.ok) console.error("Falha ao salvar a página", res.status);
       } catch (error) {
         console.error("Falha ao salvar a página", error);
       }

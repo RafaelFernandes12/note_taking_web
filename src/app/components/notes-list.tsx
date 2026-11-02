@@ -1,26 +1,7 @@
-import Link from "next/link";
-import type { JSONContent } from "@tiptap/react";
+import { Link } from "react-router";
+import type { Note } from "@/app/lib/api";
 import { NewNoteButton } from "@/app/components/new-note-button";
 import { noteBody, noteTitle, UNTITLED } from "@/app/lib/note-text";
-
-type Tag = {
-  id: number;
-  name: string;
-};
-
-type PageSummary = {
-  id: number;
-  title: string | null;
-  content: JSONContent | null;
-  tags: Tag[] | null;
-  createdAt: string;
-  updatedAt: string;
-};
-
-type PagedModel<T> = {
-  content: T[] | null;
-  page?: { size: number; number: number; totalElements: number; totalPages: number };
-};
 
 const dateFormat = new Intl.DateTimeFormat("pt-BR", {
   day: "numeric",
@@ -29,23 +10,8 @@ const dateFormat = new Intl.DateTimeFormat("pt-BR", {
   minute: "2-digit",
 });
 
-export async function NotesList() {
-  // `title` é obrigatório no backend; vazio traz todas as notas.
-  const params = new URLSearchParams({
-    title: "",
-    size: "100",
-    sort: "updatedAt,desc",
-  });
-  const res = await fetch(`http://localhost:8080/api/pages?${params}`, {
-    cache: "no-store",
-  });
-  if (!res.ok) throw new Error(`Falha ao carregar as notas (${res.status})`);
-
-  // O backend devolve um `PagedModel`: `{ content: [...], page: {...} }`.
-  const data: PagedModel<PageSummary> = await res.json();
-  const pages = data.content ?? [];
-  const total = data.page?.totalElements ?? pages.length;
-
+/** Lista de notas da página inicial (os dados vêm do loader da rota). */
+export function NotesList({ pages, total }: { pages: Note[]; total: number }) {
   if (pages.length === 0) {
     return (
       <section className="flex flex-col items-start gap-4 rounded-[10px] border-2 border-dashed border-muted bg-card p-6">
@@ -80,7 +46,7 @@ export async function NotesList() {
           return (
             <li key={page.id}>
               <Link
-                href={`/page/${page.id}`}
+                to={`/page/${page.id}`}
                 className="flex h-full flex-col gap-3 rounded-[10px] border-2 border-ink bg-card p-5 shadow-hard transition-[transform,box-shadow] duration-150 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-hard-lg focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ink/50 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none-hard"
               >
                 <h3 className="text-[1.35rem] font-black leading-tight tracking-tight [overflow-wrap:anywhere]">

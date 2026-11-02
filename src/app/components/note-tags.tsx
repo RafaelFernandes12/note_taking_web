@@ -1,8 +1,6 @@
-"use client";
-
 import { useId, useState } from "react";
 import type { NoteTag } from "@/app/components/note-editor";
-import { getOrCreateTag } from "@/app/lib/tag-actions";
+import { getOrCreateTag } from "@/app/lib/api";
 
 /** Limpa o que foi digitado: tira `#`, espaços extras e pontas. */
 function cleanTagName(raw: string) {

@@ -1,7 +1,5 @@
-"use client";
-
 import { useEffect, useImperativeHandle, useRef, useState } from "react";
-import type { NoteSummary } from "@/app/lib/note-actions";
+import type { NoteSummary } from "@/app/lib/api";
 
 export type NoteLinkListHandle = {
   onKeyDown: (event: KeyboardEvent) => boolean;

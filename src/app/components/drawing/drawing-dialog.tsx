@@ -1,24 +1,12 @@
-"use client";
-
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import dynamic from "next/dynamic";
 import type {
   ExcalidrawImperativeAPI,
   ExcalidrawInitialDataState,
 } from "@excalidraw/excalidraw/types";
 
-const DrawingCanvas = dynamic(
-  () => import("@/app/components/drawing/drawing-canvas"),
-  {
-    ssr: false,
-    loading: () => (
-      <p className="grid h-full place-items-center text-xs font-black uppercase tracking-[0.08em] text-muted">
-        Abrindo o quadro…
-      </p>
-    ),
-  },
-);
+// O Excalidraw é pesado: só carrega quando o quadro abre.
+const DrawingCanvas = lazy(() => import("@/app/components/drawing/drawing-canvas"));
 
 /** Soma das versões dos elementos: muda a cada traço, igual ao `getSceneVersion`. */
 function sceneVersion(api: ExcalidrawImperativeAPI) {
@@ -134,6 +122,13 @@ export function DrawingDialog({
       </header>
 
       <div className="relative min-h-0 flex-1">
+        <Suspense
+          fallback={
+            <p className="grid h-full place-items-center text-xs font-black uppercase tracking-[0.08em] text-muted">
+              Abrindo o quadro…
+            </p>
+          }
+        >
         <DrawingCanvas
           initialData={initialData}
           onReady={(api) => {
@@ -148,6 +143,7 @@ export function DrawingDialog({
             else if (version !== startVersion.current && !dirty) setDirty(true);
           }}
         />
+        </Suspense>
       </div>
     </div>,
     document.body,

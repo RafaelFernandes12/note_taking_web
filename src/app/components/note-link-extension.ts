@@ -6,7 +6,7 @@ import {
   NoteLinkList,
   type NoteLinkListHandle,
 } from "@/app/components/note-link-list";
-import { searchNotes, type NoteSummary } from "@/app/lib/note-actions";
+import { searchNotes, type NoteSummary } from "@/app/lib/api";
 
 export const NOTE_LINK = "noteLink";
 

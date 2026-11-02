@@ -1,5 +1,3 @@
-"use client";
-
 import { useCallback, useEffect, useState } from "react";
 import type { Editor } from "@tiptap/react";
 import type { ExcalidrawInitialDataState } from "@excalidraw/excalidraw/types";
