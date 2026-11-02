@@ -1,9 +1,17 @@
-import { Suspense } from "react";
+import { useLoaderData, type LoaderFunctionArgs } from "react-router";
 import { AppHeader } from "@/app/components/app-header";
 import { NewNoteButton } from "@/app/components/new-note-button";
 import { NotesList } from "@/app/components/notes-list";
+import { listNotes } from "@/app/lib/api";
 
-export default function Home() {
+/** Busca as notas antes de mostrar a página. */
+export async function homeLoader({ request }: LoaderFunctionArgs) {
+  return listNotes("", 100, request.signal);
+}
+
+export function HomePage() {
+  const { notes, total } = useLoaderData<typeof homeLoader>();
+
   return (
     <>
       <AppHeader>
@@ -24,15 +32,7 @@ export default function Home() {
           </h1>
         </div>
 
-        <Suspense
-          fallback={
-            <p className="text-xs font-black uppercase tracking-[0.08em] text-muted">
-              Carregando notas…
-            </p>
-          }
-        >
-          <NotesList />
-        </Suspense>
+        <NotesList pages={notes} total={total} />
       </main>
     </>
   );

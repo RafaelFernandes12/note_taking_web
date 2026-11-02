@@ -1,8 +1,5 @@
-@import '../styles/_variables.scss';
-@import '../styles/_keyframe-animations.scss';
-
+/* Os .scss do template (variáveis e animações) são importados no main.tsx. */
 @import "tailwindcss";
-
 
 @plugin "@tailwindcss/typography";
 
@@ -15,8 +12,9 @@
   --color-sand: #e8e1d4;
   --color-card: #ffffff;
 
-  --font-sans: var(--font-schibsted), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  /* Fontes do @fontsource (importadas no main.tsx), empacotadas no app. */
+  --font-sans: "Schibsted Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, monospace;
 
   --shadow-hard-sm: 2px 2px 0 #111111;
   --shadow-hard: 3px 3px 0 #111111;
