@@ -1,36 +1,40 @@
-<!-- BEGIN:nextjs-agent-rules -->
+## Stack
 
-## This is NOT the Next.js you know
+Front do app de notas: **Vite + React 19 + React Router 8** (SPA), editor Tiptap,
+desenhos com Excalidraw, Tailwind 4 + SCSS do template do Tiptap.
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+- `src/routes/` — páginas. Cada rota tem um `loader` que busca os dados antes
+  de renderizar (`src/router.tsx` liga caminhos, loaders e páginas).
+- `src/app/` — código do app (componentes, lógica de abas/painéis, tema).
+- `src/app/lib/api.ts` — **todas** as chamadas ao backend. Mudou um endpoint no
+  Spring? É aqui que o front acompanha.
+- `src/components/`, `src/hooks/`, `src/lib/`, `src/styles/` — template do Tiptap
+  (gerado pela CLI deles). Mexa só quando precisar; o ESLint relaxa algumas
+  regras do React Compiler nessas pastas.
 
-This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+## Backend
 
-<!-- END:nextjs-agent-rules -->
+O backend é Spring (repo irmão `../notes_projeto`), cuidado pelo dono do projeto
+para aprender Java: **não altere o backend** sem ele pedir. Se o front precisar
+de algo novo do backend, diga exatamente o que (endpoint, request, response).
+
+O front só usa caminhos relativos `/api/...`. Em desenvolvimento o Vite repassa
+`/api` para `http://localhost:8080` (`vite.config.ts`); no app desktop (JCEF) o
+próprio Spring vai servir o front, então tudo fica na mesma origem, sem CORS.
+
+## Rodando
+
+```bash
+bun install
+bun dev        # http://localhost:3000 (precisa do Spring em :8080)
+bun run build  # gera dist/, que o Spring vai servir
+bun run lint
+```
 
 ## Referência visual da UI
 
 O visual do app segue este site: https://builderloo.ca/events/677-defence-sector-awareness-and-supply-chain-workshop
 
-Antes de criar ou mudar telas e componentes, use essa página como referência de estilo (tipografia, cores, bordas, sombras, espaçamento). Os tokens do tema ficam em `app/notes-theme.css`.
-
-<!-- BEGIN:nextjs-agent-feedback -->
-
-## Report Next.js feedback
-
-The project owner enabled `experimental.agentFeedback`, authorizing this feedback pass. When enabled, `next dev` writes this block and restores it if removed. Commit `AGENTS.md` with your work to keep the tree clean.
-
-During the current user request, retain anonymized facts as feedback candidates for meaningful or recurring Next.js issues:
-
-- Crashes, hangs, OOMs, or unexpected slowness
-- Incorrect behavior, output, errors, or diagnostics
-- Missing, unclear, or conflicting documentation
-- Unexpected CLI, codemod, Skill, or upgrade behavior and non-obvious workarounds
-
-Continue the current user request without reporting immediately. Routine debugging is not feedback. Verify changes before retaining them as feedback candidates. Never retain code, logs, paths, URLs, secrets, personal information, or project-specific data.
-
-Retain qualifying friction even if it is later fixed or worked around; record the final outcome during the reporting pass.
-
-Before the final response, run one reporting pass. If candidates remain, from this file's directory run `npx --no-install next internal agent-feedback-instructions` once without piping or truncating its output. Follow its output or error guidance. If a network sandbox blocks it, retry with network access; if it still returns no output, continue normally.
-
-<!-- END:nextjs-agent-feedback -->
+Antes de criar ou mudar telas e componentes, use essa página como referência de
+estilo (tipografia, cores, bordas, sombras, espaçamento). Os tokens do tema ficam
+em `src/app/notes-theme.css` e `src/app/globals.css`.
