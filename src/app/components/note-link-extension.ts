@@ -15,8 +15,11 @@ export const noteHref = (id: string | number) => `/page/${id}`;
 type NoteLinkOptions = {
   /** Nota aberta no editor: não aparece nas sugestões. */
   currentNoteId?: number;
-  /** Clique num link. `newTab` quando segurou Ctrl/Cmd. */
-  onOpen?: (href: string, newTab: boolean) => void;
+  /**
+   * Clique num link para a nota `id`. `newTab`: segurou Ctrl/Cmd;
+   * `otherPane`: segurou Shift (abrir no outro painel, lado a lado).
+   */
+  onOpen?: (id: number, how: { newTab: boolean; otherPane: boolean }) => void;
 };
 
 /**
@@ -47,8 +50,13 @@ export function createNoteLink({ currentNoteId, onOpen }: NoteLinkOptions) {
                 if (!link) return false;
                 // Dentro do contenteditable o navegador não segue o link sozinho.
                 event.preventDefault();
-                const href = link.getAttribute("href");
-                if (href) onOpen?.(href, event.metaKey || event.ctrlKey);
+                const id = Number(link.getAttribute("data-id"));
+                if (Number.isInteger(id) && id > 0) {
+                  onOpen?.(id, {
+                    newTab: event.metaKey || event.ctrlKey,
+                    otherPane: event.shiftKey,
+                  });
+                }
                 return true;
               },
             },
