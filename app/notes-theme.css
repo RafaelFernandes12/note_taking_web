@@ -1,0 +1,296 @@
+/* ----------------------------------------------------------------
+   Tema do app de notas: papel creme, tinta preta, laranja de destaque,
+   bordas de 2px e sombras duras. Sobrescreve as variáveis do Tiptap
+   sem tocar em components/. Os seletores começam em `html.notes-app`
+   para ganhar dos estilos do template independente da ordem de carga.
+---------------------------------------------------------------- */
+
+html.notes-app {
+  /* O app só tem tema claro: sem isso o navegador pinta inputs e
+     scrollbars no esquema escuro do sistema. */
+  color-scheme: light;
+
+  --n-paper: #f4efe6;
+  --n-ink: #111111;
+  --n-muted: #4d4a45;
+  --n-accent: #ff6b35;
+  --n-peach: #ffd9c9;
+  --n-sand: #e8e1d4;
+  --n-card: #ffffff;
+  --n-hairline: rgba(17, 17, 17, 0.2);
+  --n-shadow-sm: 2px 2px 0 var(--n-ink);
+  --n-shadow: 3px 3px 0 var(--n-ink);
+  --n-focus: 0 0 0 3px color-mix(in srgb, var(--n-ink) 50%, transparent);
+
+  /* Tiptap: cores globais */
+  --tt-bg-color: var(--n-paper);
+  --tt-theme-text: var(--n-ink);
+  --tt-scrollbar-color: var(--n-hairline);
+  --tt-cursor-color: var(--n-ink);
+  --tt-selection-color: var(--n-peach);
+  --tiptap-card-bg-color: var(--n-card);
+  --tiptap-card-border-color: var(--n-ink);
+  --tt-shadow-elevated-md: var(--n-shadow);
+  --tt-radius-lg: 6px;
+  --tt-radius-md: 6px;
+  --tt-radius-sm: 4px;
+
+  /* Tiptap: marca vira laranja */
+  --tt-brand-color-50: #fff3ee;
+  --tt-brand-color-100: var(--n-peach);
+  --tt-brand-color-200: #ffc2a8;
+  --tt-brand-color-300: #ff9c74;
+  --tt-brand-color-400: #ff8355;
+  --tt-brand-color-500: var(--n-accent);
+  --tt-brand-color-600: #e5552a;
+  --tt-brand-color-700: #c44520;
+  --tt-brand-color-800: #97141f;
+  --tt-brand-color-900: #5c0d14;
+
+  /* Barra de ferramentas */
+  --tt-toolbar-bg-color: var(--n-paper);
+  --tt-toolbar-border-color: var(--n-ink);
+
+  /* Menus, popovers, tooltips, inputs */
+  --tt-dropdown-menu-bg-color: var(--n-card);
+  --tt-dropdown-menu-text-color: var(--n-ink);
+  --tt-dropdown-menu-label-color: var(--n-muted);
+  --tt-tooltip-bg: var(--n-ink);
+  --tt-tooltip-text: var(--n-paper);
+  --tt-input-border: var(--n-ink);
+  --tt-input-border-focus: var(--n-ink);
+  --tt-input-placeholder: var(--n-muted);
+
+  /* Conteúdo do editor */
+  --tt-inline-code-bg-color: var(--n-sand);
+  --tt-inline-code-text-color: var(--n-ink);
+  --tt-inline-code-border-color: transparent;
+  --tt-codeblock-bg: var(--n-card);
+  --tt-codeblock-text: var(--n-ink);
+  --tt-codeblock-border: var(--n-ink);
+  --tt-checklist-bg-color: var(--n-card);
+  --tt-checklist-border-color: var(--n-ink);
+  --tt-checklist-bg-active-color: var(--n-accent);
+  --tt-checklist-border-active-color: var(--n-ink);
+  --tt-checklist-check-icon-color: var(--n-ink);
+  --tt-link-border-color: var(--n-accent);
+
+  /* Bloco de upload de imagem */
+  --tiptap-image-upload-icon-color: var(--n-ink);
+  --tiptap-image-upload-text-color: var(--n-ink);
+  --tiptap-image-upload-subtext-color: var(--n-muted);
+  --tiptap-image-upload-border: var(--n-ink);
+  --tiptap-image-upload-border-hover: var(--n-ink);
+  --tiptap-image-upload-icon-doc-bg: var(--n-sand);
+  --tiptap-image-upload-icon-doc-border: var(--n-ink);
+}
+
+html.notes-app body {
+  font-family: var(--font-sans);
+  color: var(--n-ink);
+  background-color: var(--n-paper);
+}
+
+html.notes-app ::selection {
+  background: var(--n-peach);
+  color: var(--n-ink);
+}
+
+/* ---------------- Barra de ferramentas ---------------- */
+
+html.notes-app .tiptap-toolbar[data-variant="fixed"] {
+  border-bottom: 2px solid var(--n-ink);
+  gap: 0.375rem;
+  padding: 0.375rem 1rem;
+}
+
+@media (max-width: 480px) {
+  html.notes-app .tiptap-toolbar[data-variant="fixed"] {
+    border-top: 2px solid var(--n-ink);
+    border-bottom: none;
+  }
+}
+
+html.notes-app .tiptap-separator {
+  background-color: var(--n-hairline);
+}
+
+/* ---------------- Botões do Tiptap ---------------- */
+
+html.notes-app .tiptap-button:not([data-style="primary"]) {
+  --tt-button-default-bg-color: transparent;
+  --tt-button-hover-bg-color: var(--n-peach);
+  --tt-button-active-bg-color: var(--n-accent);
+  --tt-button-active-bg-color-emphasized: var(--n-accent);
+  --tt-button-active-bg-color-subdued: var(--n-sand);
+  --tt-button-active-hover-bg-color: var(--n-accent);
+  --tt-button-active-hover-bg-color-emphasized: var(--n-accent);
+  --tt-button-active-hover-bg-color-subdued: var(--n-sand);
+  --tt-button-disabled-bg-color: transparent;
+
+  --tt-button-default-text-color: var(--n-ink);
+  --tt-button-hover-text-color: var(--n-ink);
+  --tt-button-active-text-color: var(--n-ink);
+  --tt-button-active-text-color-emphasized: var(--n-ink);
+  --tt-button-active-text-color-subdued: var(--n-ink);
+  --tt-button-disabled-text-color: rgba(17, 17, 17, 0.3);
+
+  --tt-button-default-icon-color: var(--n-ink);
+  --tt-button-hover-icon-color: var(--n-ink);
+  --tt-button-active-icon-color: var(--n-ink);
+  --tt-button-active-icon-color-emphasized: var(--n-ink);
+  --tt-button-active-icon-color-subdued: var(--n-ink);
+  --tt-button-disabled-icon-color: rgba(17, 17, 17, 0.3);
+
+  --tt-button-default-icon-sub-color: var(--n-muted);
+  --tt-button-hover-icon-sub-color: var(--n-ink);
+  --tt-button-active-icon-sub-color: var(--n-ink);
+  --tt-button-default-dropdown-arrows-color: var(--n-muted);
+  --tt-button-hover-dropdown-arrows-color: var(--n-ink);
+  --tt-button-active-dropdown-arrows-color: var(--n-ink);
+}
+
+html.notes-app .tiptap-button {
+  border: 2px solid transparent;
+  border-radius: 6px;
+  font-weight: 700;
+}
+
+html.notes-app .tiptap-button:focus-visible {
+  outline: none;
+  border-color: var(--n-ink);
+  box-shadow: var(--n-focus);
+}
+
+html.notes-app .tiptap-button[data-active-state="on"]:not([disabled]),
+html.notes-app .tiptap-button[data-state="open"]:not([disabled]) {
+  border-color: var(--n-ink);
+  box-shadow: var(--n-shadow-sm);
+}
+
+html.notes-app .tiptap-button[data-style="primary"] {
+  border-color: var(--n-ink);
+  box-shadow: var(--n-shadow-sm);
+  color: var(--n-ink);
+}
+
+/* ---------------- Menus e popovers ---------------- */
+
+html.notes-app .tiptap-card,
+html.notes-app .tiptap-dropdown-menu-content,
+html.notes-app .tiptap-dropdown-menu-sub-content {
+  border: 2px solid var(--n-ink);
+  border-radius: 6px;
+  box-shadow: var(--n-shadow);
+}
+
+html.notes-app .tiptap-tooltip {
+  border-radius: 4px;
+  font-weight: 700;
+  box-shadow: none;
+}
+
+/* ---------------- Página do editor ---------------- */
+
+@media (min-width: 481px) {
+  html.notes-app .simple-editor-wrapper {
+    width: auto;
+    height: auto;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  /* O editor ocupa toda a área abaixo da barra (clicar em qualquer lugar
+     foca o texto); o padding centraliza uma coluna de ~760px. */
+  html.notes-app .simple-editor-content .tiptap.ProseMirror.simple-editor {
+    padding-inline: max(3rem, calc((100% - 760px) / 2 + 3rem));
+  }
+}
+
+html.notes-app .simple-editor-content {
+  width: 100%;
+}
+
+/* Tags da nota: acima do título, na mesma coluna do texto. */
+html.notes-app .note-tags {
+  padding: 1rem 1.5rem 0;
+}
+
+html.notes-app .note-tags + .simple-editor-content .tiptap.ProseMirror.simple-editor {
+  padding-top: 1rem;
+}
+
+@media (min-width: 481px) {
+  html.notes-app .note-tags {
+    padding: 2rem max(3rem, calc((100% - 760px) / 2 + 3rem)) 0;
+  }
+
+  html.notes-app .note-tags + .simple-editor-content .tiptap.ProseMirror.simple-editor {
+    padding-top: 1.25rem;
+  }
+}
+
+html.notes-app .tiptap.ProseMirror {
+  font-family: var(--font-sans);
+  font-size: 1.1rem;
+  line-height: 1.65;
+  color: var(--n-ink);
+}
+
+html.notes-app .tiptap.ProseMirror h1,
+html.notes-app .tiptap.ProseMirror h2,
+html.notes-app .tiptap.ProseMirror h3,
+html.notes-app .tiptap.ProseMirror h4 {
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+html.notes-app .tiptap.ProseMirror h1 {
+  font-size: 2.1em;
+}
+
+/* A primeira linha (H1) é o título da nota. */
+html.notes-app .tiptap.ProseMirror > h1:first-child {
+  margin-top: 0;
+  font-size: 2.75em;
+  letter-spacing: -0.03em;
+}
+
+html.notes-app .tiptap.ProseMirror {
+  --placeholder-color: rgba(17, 17, 17, 0.25);
+}
+
+html.notes-app .tiptap.ProseMirror a {
+  color: var(--n-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--n-accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+html.notes-app .tiptap.ProseMirror blockquote {
+  --blockquote-bg-color: var(--n-accent);
+}
+
+html.notes-app .tiptap.ProseMirror pre {
+  border: 2px solid var(--n-ink);
+  border-radius: 6px;
+  box-shadow: var(--n-shadow-sm);
+}
+
+html.notes-app .tiptap.ProseMirror code {
+  font-family: var(--font-mono);
+}
+
+html.notes-app .tiptap.ProseMirror hr {
+  border: none;
+  border-top: 2px solid var(--n-ink);
+}
+
+html.notes-app .tiptap.ProseMirror img {
+  border: 2px solid var(--n-ink);
+  border-radius: 6px;
+}
