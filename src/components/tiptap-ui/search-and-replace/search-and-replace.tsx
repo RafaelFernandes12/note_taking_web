@@ -1,5 +1,3 @@
-"use client"
-
 import { forwardRef, useCallback, useEffect, useRef } from "react"
 import { useHotkeys } from "react-hotkeys-hook"
 
@@ -17,7 +15,7 @@ import { SearchIcon } from "@/components/tiptap-icons/search-icon"
 import { WholeWordIcon } from "@/components/tiptap-icons/whole-word-icon"
 
 // --- Lib ---
-import { cn } from "@/lib/tiptap-utils"
+import { cn, isEditorInActivePane } from "@/lib/tiptap-utils"
 
 // --- Tiptap UI ---
 import type { UseSearchAndReplaceConfig } from "@/components/tiptap-ui/search-and-replace"
@@ -206,6 +204,7 @@ export const SearchAndReplace = forwardRef<
     })
 
     const {
+      editor,
       isVisible,
       resultCountLabel,
       searchTerm,
@@ -262,6 +261,8 @@ export const SearchAndReplace = forwardRef<
     useHotkeys(
       SEARCH_AND_REPLACE_SHORTCUT_KEY,
       (event) => {
+        if (!isEditorInActivePane(editor)) return
+
         if (open) {
           event.preventDefault()
           focusSearchInput()

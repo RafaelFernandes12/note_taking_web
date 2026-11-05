@@ -1,5 +1,3 @@
-"use client"
-
 import { useCallback, useEffect, useState } from "react"
 import { type Editor } from "@tiptap/react"
 import { useHotkeys } from "react-hotkeys-hook"
@@ -13,6 +11,7 @@ import {
   isMarkInSchema,
   isNodeTypeSelected,
   isExtensionAvailable,
+  isEditorInActivePane,
 } from "@/lib/tiptap-utils"
 
 // --- Tiptap Extensions ---
@@ -360,6 +359,7 @@ export function useColorHighlight(config: UseColorHighlightConfig) {
   useHotkeys(
     COLOR_HIGHLIGHT_SHORTCUT_KEY,
     (event) => {
+      if (!isEditorInActivePane(editor)) return
       event.preventDefault()
       handleColorHighlight()
     },

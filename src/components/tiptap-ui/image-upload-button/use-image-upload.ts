@@ -1,5 +1,3 @@
-"use client"
-
 import { useCallback, useEffect, useState } from "react"
 import { useHotkeys } from "react-hotkeys-hook"
 import { type Editor } from "@tiptap/react"
@@ -9,7 +7,7 @@ import { useTiptapEditor } from "@/hooks/use-tiptap-editor"
 import { useIsBreakpoint } from "@/hooks/use-is-breakpoint"
 
 // --- Lib ---
-import { isExtensionAvailable } from "@/lib/tiptap-utils"
+import { isEditorInActivePane, isExtensionAvailable } from "@/lib/tiptap-utils"
 
 // --- Icons ---
 import { ImagePlusIcon } from "@/components/tiptap-icons/image-plus-icon"
@@ -182,6 +180,7 @@ export function useImageUpload(config?: UseImageUploadConfig) {
   useHotkeys(
     IMAGE_UPLOAD_SHORTCUT_KEY,
     (event) => {
+      if (!isEditorInActivePane(editor)) return
       event.preventDefault()
       handleImage()
     },

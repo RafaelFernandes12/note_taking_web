@@ -665,3 +665,24 @@ export function getSelectedBlockNodes(editor: Editor): PMNode[] {
 
   return blocks
 }
+
+/**
+ * Com duas notas lado a lado há dois editores na página, e os atalhos globais
+ * (Mod+F, upload, destaque) disparariam nos dois. Só o painel com o foco
+ * (`.note-pane`) responde; sem foco em lugar nenhum, responde o primeiro.
+ */
+export function isEditorInActivePane(editor: Editor | null): boolean {
+  if (!editor || typeof document === "undefined") return true
+  const pane =
+    editor.view.dom.closest(".note-pane") ??
+    editor.view.dom.closest(".simple-editor-wrapper")
+  if (!pane) return true
+
+  const active = document.activeElement
+  if (active && active !== document.body) return pane.contains(active)
+  // Conta só os painéis visíveis (o do lado fica escondido em telas estreitas).
+  const firstVisible = Array.from(
+    document.querySelectorAll<HTMLElement>(".note-pane")
+  ).find((el) => el.checkVisibility())
+  return !firstVisible || firstVisible === pane
+}

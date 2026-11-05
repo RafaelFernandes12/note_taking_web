@@ -339,3 +339,28 @@ html.notes-app .tiptap.ProseMirror img[data-drawing] {
 html.notes-app .tiptap.ProseMirror img[data-drawing]:hover {
   outline-color: var(--n-accent);
 }
+
+/* ---------------- Notas lado a lado ---------------- */
+
+/* Cada painel rola sozinho (≥ 768px): o painel de busca fica preso ao painel
+   da nota em vez da janela, logo abaixo da barra de ferramentas. */
+@media (min-width: 768px) {
+  html.notes-app .note-pane .simple-editor-search-and-replace {
+    position: absolute;
+    max-height: calc(100% - var(--tt-toolbar-height) - 1rem);
+  }
+
+  /* Lado a lado a barra fica estreita: quebra em duas linhas em vez de
+     esconder botões numa rolagem horizontal sem barra. */
+  html.notes-app main:has(> .note-pane ~ .note-pane) .tiptap-toolbar[data-variant="fixed"] {
+    flex-wrap: wrap;
+    row-gap: 0.25rem;
+    overflow-x: visible;
+  }
+
+  /* Com a barra em duas linhas a altura varia: a busca fica embaixo. */
+  html.notes-app main:has(> .note-pane ~ .note-pane) .simple-editor-search-and-replace {
+    top: auto;
+    bottom: 0.75rem;
+  }
+}
