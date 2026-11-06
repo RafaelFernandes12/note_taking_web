@@ -1,11 +1,13 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import type { JSONContent } from "@tiptap/react";
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
 import { useThrottledCallback } from "@/hooks/use-throttled-callback";
-import { noteTitle } from "@/app/lib/note-text";
+import { linkedNoteIds, noteTitle } from "@/app/lib/note-text";
 import { NoteTags } from "@/app/components/note-tags";
+import { createNoteLink } from "@/app/components/note-link-extension";
 
 /** Tag como o backend devolve; reenviada inteira no PUT para não ser apagada. */
 export type NoteTag = {
@@ -27,9 +29,23 @@ export function NoteEditor({
   knownTags: NoteTag[];
 }) {
   const [tags, setTags] = useState(initialTags);
-  // O PUT sempre manda conteúdo e tags juntos (o backend sobrescreve os dois).
+  // O PUT sempre manda conteúdo, tags e links juntos (o backend sobrescreve tudo).
   const contentRef = useRef(initialContent);
   const tagsRef = useRef(initialTags);
+  const router = useRouter();
+
+  const extensions = useMemo(
+    () => [
+      createNoteLink({
+        currentNoteId: id,
+        onOpen: (href, newTab) => {
+          if (newTab) window.open(href, "_blank", "noopener");
+          else router.push(href);
+        },
+      }),
+    ],
+    [id, router],
+  );
 
   const save = useThrottledCallback(
     async () => {
@@ -41,6 +57,10 @@ export function NoteEditor({
             title: noteTitle(contentRef.current),
             content: contentRef.current,
             tags: tagsRef.current,
+            // Os links saem do próprio texto: cada `[[nota]]` vira um `{ id }`.
+            links: linkedNoteIds(contentRef.current, id).map((linkId) => ({
+              id: linkId,
+            })),
           }),
         });
         if (!res.ok) console.error("Falha ao salvar a página", res.status);
@@ -55,6 +75,7 @@ export function NoteEditor({
   return (
     <SimpleEditor
       initialContent={initialContent}
+      extensions={extensions}
       onChange={(content) => {
         contentRef.current = content;
         save();
