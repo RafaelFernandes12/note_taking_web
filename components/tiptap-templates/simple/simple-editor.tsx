@@ -6,6 +6,7 @@ import {
   EditorContext,
   JSONContent,
   useEditor,
+  type Extensions,
 } from "@tiptap/react";
 
 // --- Tiptap Core Extensions ---
@@ -216,11 +217,14 @@ export function SimpleEditor({
   initialContent,
   onChange,
   header,
+  extensions = [],
 }: {
   initialContent?: JSONContent;
   onChange?: (json: JSONContent) => void;
   /** Conteúdo exibido entre a barra de ferramentas e o texto. */
   header?: React.ReactNode;
+  /** Extensões extras do app (só lidas na criação do editor). */
+  extensions?: Extensions;
 }) {
   const isMobile = useIsBreakpoint();
   const { height } = useWindowSize();
@@ -286,6 +290,7 @@ export function SimpleEditor({
         upload: handleImageUpload,
         onError: (error) => console.error("Upload failed:", error),
       }),
+      ...extensions,
     ],
     onUpdate: ({ editor }) => {
       onChange?.(editor.getJSON());
