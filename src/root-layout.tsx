@@ -4,10 +4,16 @@ import {
   Outlet,
   useRouteError,
 } from "react-router";
+import { NoteShortcuts } from "@/app/components/note-shortcuts";
 
-/** Casca de todas as páginas. */
+/** Casca de todas as páginas: o conteúdo da rota e os atalhos globais. */
 export function RootLayout() {
-  return <Outlet />;
+  return (
+    <>
+      <Outlet />
+      <NoteShortcuts />
+    </>
+  );
 }
 
 /** Mostrado enquanto o primeiro loader roda. */
