@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { createNote } from "@/app/lib/api";
+import { openInPane } from "@/app/lib/note-tabs";
 
-/** Cria uma nota vazia e abre ela. */
+/** Cria uma nota vazia e abre ela numa aba nova. */
 export function NewNoteButton() {
   const navigate = useNavigate();
   const [pending, setPending] = useState(false);
@@ -11,7 +12,8 @@ export function NewNoteButton() {
     setPending(true);
     try {
       const id = await createNote();
-      navigate(`/page/${id}`);
+      const href = openInPane("main", id, true);
+      if (href) navigate(href);
     } catch (error) {
       console.error("Falha ao criar a nota", error);
       setPending(false);

@@ -13,9 +13,9 @@ import type { UploadFunction } from "@/components/tiptap-node/image-upload-node/
 import {
   currentPanes,
   flushPendingSaves,
-  panesHref,
   registerPendingSave,
 } from "@/app/lib/note-panes";
+import { openInPane, setTabTitle } from "@/app/lib/note-tabs";
 
 /** Tag como o backend devolve; reenviada inteira no PUT para não ser apagada. */
 export type NoteTag = Tag;
@@ -84,27 +84,16 @@ export function NoteEditor({
       createNoteLink({
         currentNoteId: id,
         onOpen: async (target, { newTab, otherPane }) => {
-          if (newTab) {
-            window.open(panesHref(target), "_blank", "noopener");
-            return;
-          }
           // Lê os painéis da URL na hora do clique: o do lado pode ter
           // aberto/fechado depois que o editor foi criado.
-          const { mainId, sideId } = currentPanes();
+          const { sideId } = currentPanes();
           const pane = id === sideId ? "side" : "main";
-          const otherId = pane === "main" ? sideId : mainId;
-          // Já está aberta no outro painel: nada a fazer.
-          if (target === otherId) return;
-
-          // Clique normal troca a nota deste painel; Shift+clique abre no outro.
-          let href: string;
-          if (pane === "main") {
-            href = otherPane ? panesHref(id, target) : panesHref(target, otherId);
-          } else {
-            href = otherPane
-              ? panesHref(target, id)
-              : panesHref(otherId ?? id, target);
-          }
+          // Clique normal troca a nota desta aba; Ctrl/Cmd+clique abre numa
+          // aba nova; Shift+clique abre numa aba nova do outro painel.
+          const href = otherPane
+            ? openInPane(pane === "main" ? "side" : "main", target, true)
+            : openInPane(pane, target, newTab);
+          if (!href) return;
           await flushPendingSaves();
           navigate(href);
         },
@@ -126,6 +115,8 @@ export function NoteEditor({
       toolbarExtra={<DrawingButton upload={uploadImage} />}
       onChange={(content) => {
         contentRef.current = content;
+        // O título da aba acompanha o H1 enquanto digita.
+        setTabTitle(id, noteTitle(content));
         markChanged();
       }}
       header={

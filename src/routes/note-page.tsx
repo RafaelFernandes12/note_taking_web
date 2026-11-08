@@ -1,8 +1,9 @@
 import { data, useLoaderData, type LoaderFunctionArgs } from "react-router";
-import { AppHeader } from "@/app/components/app-header";
-import { NewNoteButton } from "@/app/components/new-note-button";
+import { AppLogo } from "@/app/components/app-header";
 import { NoteEditor } from "@/app/components/note-editor";
+import { NoteTabStrip, PaneTabSync } from "@/app/components/note-tab-strip";
 import { getNote, listTags, type Note, type Tag } from "@/app/lib/api";
+import { noteTitle, UNTITLED } from "@/app/lib/note-text";
 import { parseSideId, SIDE_PARAM, type Pane } from "@/app/lib/note-panes";
 
 /**
@@ -32,13 +33,19 @@ export function NotePage() {
 
   const panes: { pane: Pane; page: Note }[] = [{ pane: "main", page: main }];
   if (side) panes.push({ pane: "side", page: side });
+  const split = panes.length === 2;
 
   return (
     // Em telas largas a página tem a altura da janela e cada painel rola sozinho.
     <div className="flex flex-1 flex-col md:h-dvh">
-      <AppHeader>
-        <NewNoteButton />
-      </AppHeader>
+      {/* Faixa única de abas no topo, para os dois painéis (como no Obsidian).
+          Nova nota é Ctrl+N (ou o +) e abrir ao lado é Ctrl+]. */}
+      <header className="flex shrink-0 items-end gap-3 border-b-2 border-ink bg-sand pl-3 pr-2 pt-2">
+        <div className="mb-1.5">
+          <AppLogo compact />
+        </div>
+        <NoteTabStrip />
+      </header>
       <main className="flex flex-1 flex-col md:min-h-0 md:flex-row">
         {panes.map(({ pane, page }) => (
           <section
@@ -52,6 +59,17 @@ export function NotePage() {
               (pane === "side" ? " hidden border-ink md:flex md:border-l-2" : "")
             }
           >
+            <PaneTabSync
+              pane={pane}
+              noteId={page.id}
+              // O H1 é o título de verdade; o `title` salvo pode estar atrasado.
+              title={
+                noteTitle(page.content) !== UNTITLED
+                  ? noteTitle(page.content)
+                  : page.title?.trim() || UNTITLED
+              }
+              split={split}
+            />
             <div className="note-pane-scroll flex flex-1 flex-col md:min-h-0 md:overflow-y-auto">
               <NoteEditor
                 id={page.id}
