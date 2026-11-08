@@ -36,7 +36,10 @@ import {
 } from "@/components/tiptap-ui-primitive/toolbar";
 
 // --- Tiptap Node ---
-import { ImageUploadNode } from "@/components/tiptap-node/image-upload-node/image-upload-node-extension";
+import {
+  ImageUploadNode,
+  type UploadFunction,
+} from "@/components/tiptap-node/image-upload-node/image-upload-node-extension";
 import { HorizontalRule } from "@/components/tiptap-node/horizontal-rule-node/horizontal-rule-node-extension";
 import "@/components/tiptap-node/blockquote-node/blockquote-node.scss";
 import "@/components/tiptap-node/code-block-node/code-block-node.scss";
@@ -218,6 +221,7 @@ export function SimpleEditor({
   onChange,
   header,
   extensions = [],
+  uploadImage = handleImageUpload,
 }: {
   initialContent?: JSONContent;
   onChange?: (json: JSONContent) => void;
@@ -225,6 +229,8 @@ export function SimpleEditor({
   header?: React.ReactNode;
   /** Extensões extras do app (só lidas na criação do editor). */
   extensions?: Extensions;
+  /** Envia a imagem e devolve a URL dela. O padrão é o upload de demonstração. */
+  uploadImage?: UploadFunction;
 }) {
   const isMobile = useIsBreakpoint();
   const { height } = useWindowSize();
@@ -287,7 +293,7 @@ export function SimpleEditor({
         accept: "image/*",
         maxSize: MAX_FILE_SIZE,
         limit: 3,
-        upload: handleImageUpload,
+        upload: uploadImage,
         onError: (error) => console.error("Upload failed:", error),
       }),
       ...extensions,

@@ -8,6 +8,7 @@ import { useThrottledCallback } from "@/hooks/use-throttled-callback";
 import { linkedNoteIds, noteTitle } from "@/app/lib/note-text";
 import { NoteTags } from "@/app/components/note-tags";
 import { createNoteLink } from "@/app/components/note-link-extension";
+import { uploadNoteImage } from "@/app/lib/upload-image";
 
 /** Tag como o backend devolve; reenviada inteira no PUT para não ser apagada. */
 export type NoteTag = {
@@ -76,6 +77,9 @@ export function NoteEditor({
     <SimpleEditor
       initialContent={initialContent}
       extensions={extensions}
+      uploadImage={(file, onProgress, signal) =>
+        uploadNoteImage(file, id, onProgress, signal)
+      }
       onChange={(content) => {
         contentRef.current = content;
         save();
