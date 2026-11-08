@@ -17,6 +17,11 @@ type PageSummary = {
   updatedAt: string;
 };
 
+type PagedModel<T> = {
+  content: T[] | null;
+  page?: { size: number; number: number; totalElements: number; totalPages: number };
+};
+
 const dateFormat = new Intl.DateTimeFormat("pt-BR", {
   day: "numeric",
   month: "short",
@@ -25,13 +30,21 @@ const dateFormat = new Intl.DateTimeFormat("pt-BR", {
 });
 
 export async function NotesList() {
-  const res = await fetch("http://localhost:8080/api/pages", {
+  // `title` é obrigatório no backend; vazio traz todas as notas.
+  const params = new URLSearchParams({
+    title: "",
+    size: "100",
+    sort: "updatedAt,desc",
+  });
+  const res = await fetch(`http://localhost:8080/api/pages?${params}`, {
     cache: "no-store",
   });
   if (!res.ok) throw new Error(`Falha ao carregar as notas (${res.status})`);
 
-  const pages: PageSummary[] = await res.json();
-  pages.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+  // O backend devolve um `PagedModel`: `{ content: [...], page: {...} }`.
+  const data: PagedModel<PageSummary> = await res.json();
+  const pages = data.content ?? [];
+  const total = data.page?.totalElements ?? pages.length;
 
   if (pages.length === 0) {
     return (
@@ -53,7 +66,7 @@ export async function NotesList() {
       <h2 className="flex items-center gap-2 text-[0.8rem] font-black uppercase tracking-[0.08em]">
         Suas notas
         <span className="rounded-[5px] bg-sand px-1.5 py-0.5 text-[0.72rem]">
-          {pages.length}
+          {total}
         </span>
       </h2>
 
