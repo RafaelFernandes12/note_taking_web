@@ -324,3 +324,18 @@ html.notes-app .tiptap.ProseMirror .note-link-suggestion {
 html.notes-app .note-link-popup {
   z-index: 50;
 }
+
+/* ---------------- Desenhos (Excalidraw) ---------------- */
+
+/* Duplo clique reabre o desenho: o contorno mostra que dá para editar. */
+html.notes-app .tiptap.ProseMirror img[data-drawing] {
+  cursor: pointer;
+  border-radius: 6px;
+  outline: 2px dashed transparent;
+  outline-offset: 4px;
+  transition: outline-color 150ms;
+}
+
+html.notes-app .tiptap.ProseMirror img[data-drawing]:hover {
+  outline-color: var(--n-accent);
+}

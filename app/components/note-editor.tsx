@@ -9,6 +9,8 @@ import { linkedNoteIds, noteTitle } from "@/app/lib/note-text";
 import { NoteTags } from "@/app/components/note-tags";
 import { createNoteLink } from "@/app/components/note-link-extension";
 import { uploadNoteImage } from "@/app/lib/upload-image";
+import { DrawingButton } from "@/app/components/drawing/drawing-button";
+import type { UploadFunction } from "@/components/tiptap-node/image-upload-node/image-upload-node-extension";
 
 /** Tag como o backend devolve; reenviada inteira no PUT para não ser apagada. */
 export type NoteTag = {
@@ -34,6 +36,9 @@ export function NoteEditor({
   const contentRef = useRef(initialContent);
   const tagsRef = useRef(initialTags);
   const router = useRouter();
+
+  const uploadImage: UploadFunction = (file, onProgress, signal) =>
+    uploadNoteImage(file, id, onProgress, signal);
 
   const extensions = useMemo(
     () => [
@@ -77,9 +82,8 @@ export function NoteEditor({
     <SimpleEditor
       initialContent={initialContent}
       extensions={extensions}
-      uploadImage={(file, onProgress, signal) =>
-        uploadNoteImage(file, id, onProgress, signal)
-      }
+      uploadImage={uploadImage}
+      toolbarExtra={<DrawingButton upload={uploadImage} />}
       onChange={(content) => {
         contentRef.current = content;
         save();

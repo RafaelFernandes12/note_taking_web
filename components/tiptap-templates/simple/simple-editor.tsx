@@ -104,7 +104,9 @@ const MainToolbarContent = ({
   isSearchAndReplaceOpen,
   searchAndReplaceButtonRef,
   isMobile,
+  extra,
 }: {
+  extra?: React.ReactNode;
   onHighlighterClick: () => void;
   onLinkClick: () => void;
   onSearchAndReplaceClick: () => void;
@@ -169,6 +171,7 @@ const MainToolbarContent = ({
 
       <ToolbarGroup>
         <ImageUploadButton text="Add" />
+        {extra}
       </ToolbarGroup>
 
       <Spacer />
@@ -222,6 +225,7 @@ export function SimpleEditor({
   header,
   extensions = [],
   uploadImage = handleImageUpload,
+  toolbarExtra,
 }: {
   initialContent?: JSONContent;
   onChange?: (json: JSONContent) => void;
@@ -231,6 +235,8 @@ export function SimpleEditor({
   extensions?: Extensions;
   /** Envia a imagem e devolve a URL dela. O padrão é o upload de demonstração. */
   uploadImage?: UploadFunction;
+  /** Botões extras do app, no fim do grupo de imagem da barra. */
+  toolbarExtra?: React.ReactNode;
 }) {
   const isMobile = useIsBreakpoint();
   const { height } = useWindowSize();
@@ -274,7 +280,20 @@ export function SimpleEditor({
       TaskList,
       TaskItem.configure({ nested: true }),
       Highlight.configure({ multicolor: true }),
-      Image,
+      // `drawing`: a imagem é um desenho do Excalidraw (dá para reabrir e editar).
+      Image.extend({
+        addAttributes() {
+          return {
+            ...this.parent?.(),
+            drawing: {
+              default: false,
+              parseHTML: (el) => el.hasAttribute("data-drawing"),
+              renderHTML: (attrs) =>
+                attrs.drawing ? { "data-drawing": "" } : {},
+            },
+          };
+        },
+      }),
       Typography,
       Superscript,
       Subscript,
@@ -355,6 +374,7 @@ export function SimpleEditor({
               isSearchAndReplaceOpen={isSearchAndReplaceOpen}
               searchAndReplaceButtonRef={searchAndReplaceButtonRef}
               isMobile={isMobile}
+              extra={toolbarExtra}
             />
           ) : (
             <MobileToolbarContent
